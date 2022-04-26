@@ -20,8 +20,8 @@ cs = digitalio.DigitalInOut(board.D22)
 # create the mcp object
 mcp = MCP.MCP3008(spi, cs)
 
-# create an analog input channel on pin 7
-chan0 = AnalogIn(mcp, MCP.P0)
+# create an analog input channel on pin 6
+chan0 = AnalogIn(mcp, MCP.P6)
 
 #print('Raw ADC Value: ', chan0.value)
 #print('ADC Voltage: ' + str(chan0.voltage) + 'V')
@@ -80,7 +80,11 @@ while True:
         voltage = chan0.voltage
         value = chan0.value
         print(chan0.voltage)
-        Rt = 10 * voltage / (3.3 - voltage) # calculate resistance value of thermistor
+        print(mcp.reference_voltage)
+        print(chan0.value / 65535 * mcp.reference_voltage)
+        ref_voltage = mcp.reference_voltage
+        Rt = 10 * voltage / (ref_voltage - voltage) # calculate resistance value of thermistor
+        print('Rt: %.4f'%(Rt))
         print(Rt)
         tempK = 1/(1/(273.15 + 25) + math.log(Rt/10)/3950.0) # calculate temperature (Kelvin)
         tempC = tempK -273.15 # calculate temperature (Celsius)
