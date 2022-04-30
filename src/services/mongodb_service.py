@@ -31,7 +31,7 @@ DB_URL = f"mongodb://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/?authSource=admin&r
 client = MongoClient(DB_URL)
 
 # database select
-db = client.boiler
+db = client[DB_NAME]
 
 ######################################################################
 #
@@ -47,17 +47,19 @@ db = client.boiler
 # Add reading 
 #
 ######################################################################
-def add_temp_reading(sensor_id,degrees_celcius): 
-    
+def add_temp_reading(sensor_id,degrees_fahrenheit,type): 
+    javascript_timestamp = datetime.timestamp(datetime.now()) * 1000
+
     """
     adds a reading into the database. 
     """
     temp_reading = {
-        'timeStamp': datetime.timestamp(datetime.now()),
+        'timeStamp': javascript_timestamp,
         'sensorId': sensor_id,
-        'degrees_celcius': degrees_celcius
+        'degreesFahrenheit': degrees_fahrenheit
     }
-    result = db.sensorReading.insert_one(temp_reading)
+    result = db[type].insert_one(temp_reading)
+
 
 ######################################################################
 #

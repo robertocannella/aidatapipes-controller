@@ -104,6 +104,6 @@ while True:
     print(celcius_to_fahrenheit(steinhart))
     res_top.value = False
     print('res_top: %d'%(res_top.value))
-    db.add_temp_reading(SENSOR_ID,steinhart)
-    time.sleep(60)
+    db.add_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
+    time.sleep(600)
 
