@@ -22,8 +22,9 @@ import board
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import math
-from services import mongodb_service
+from services import mongodb_service as db
 
+SENSOR_ID = 'Stienhart_OUTDOOR'
 
 # take top of resistor low until measurment is taken
 res_top = digitalio.DigitalInOut(board.D26)
@@ -103,5 +104,6 @@ while True:
     print(celcius_to_fahrenheit(steinhart))
     res_top.value = False
     print('res_top: %d'%(res_top.value))
+    db.add_temp_reading(SENSOR_ID,steinhart)
     time.sleep(60)
 
