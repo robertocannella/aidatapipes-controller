@@ -13,7 +13,7 @@
 #   (no current will flow from 0V to ground)
 #
 ################################################################################
-
+import sys
 import os
 import time
 import busio
@@ -22,6 +22,9 @@ import board
 import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import math
+from services import mongodb_service
+
+
 # take top of resistor low until measurment is taken
 res_top = digitalio.DigitalInOut(board.D26)
 res_top.direction = digitalio.Direction.OUTPUT
