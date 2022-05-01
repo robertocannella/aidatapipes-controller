@@ -23,6 +23,7 @@ import adafruit_mcp3xxx.mcp3008 as MCP
 from adafruit_mcp3xxx.analog_in import AnalogIn
 import math
 from services import mongodb_service as db
+from services import firebase_service as fb
 
 SENSOR_ID = 'Stienhart_OUTDOOR'
 
@@ -104,6 +105,10 @@ while True:
     print(celcius_to_fahrenheit(steinhart))
     res_top.value = False
     print('res_top: %d'%(res_top.value))
+    # Local Mongo DB
     db.add_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
+
+    # Hosted SSL FireStore DB
+    fb.overwrite_last_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
     time.sleep(600)
 
