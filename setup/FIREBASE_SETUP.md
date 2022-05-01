@@ -26,7 +26,7 @@ db = firestore.client() # Get Database
 ```
 
 ## configuration of CRUD
-* example from [google python documentation]. (https://firebase.google.com/docs/firestore/quickstart#python)
+* example from: [google python documentation](https://firebase.google.com/docs/firestore/)quickstart#python)
 
 ```
 doc_ref = db.collection(u'users').document(u'alovelace')
