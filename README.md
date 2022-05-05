@@ -10,7 +10,7 @@ This portion of the ***A.I. Datapipes*** suite is **The Main Controller** for th
 * Machine Learning Portal 
 * Backend API (historic retrieval)
 
-### Purpose of this modules: 
+### Purpose of this module: 
 
 Read and push data from sensors installed near heating/cooling equipment.
 
