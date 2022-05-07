@@ -32,7 +32,7 @@ db = firestore.client()
 
 ######################################################################
 #
-# Add temperature reading
+# Replace a temperature reading
 #
 ######################################################################
 def overwrite_last_temp_reading(sensor_id,degrees_fahrenheit,type): 
@@ -52,3 +52,29 @@ def overwrite_last_temp_reading(sensor_id,degrees_fahrenheit,type):
         'degreesFahrenheit': degrees_fahrenheit
     })
    
+######################################################################
+#
+# Append temperature reading
+#
+######################################################################
+
+def append_last_temp_reading(system_id,degrees_fahrenheit,collection,document,zone_index,reading_type): 
+    """
+    appends a reading into an array. 
+
+    """
+    # generate link to collection 
+    doc_ref = db.collection(collection).document(system_id)
+
+    # generate timestamp
+    javascript_timestamp = datetime.timestamp(datetime.now()) * 1000
+
+    # build object
+    obj = {
+        'timeStamp': javascript_timestamp,
+        'degF': degrees_fahrenheit
+    }
+    # append temperature
+    locator = document + str(zone_index) + '.lineRT'
+    doc_ref.update({ locator: firestore.ArrayUnion([obj]) })
+ 
