@@ -33,7 +33,7 @@ def read_raw(property_path):
     return lines
 	
 def read_temp(device):
-    temp_path = glob.glob(device + '/temperature12')[0]
+    temp_path = glob.glob(device + '/temperature12')[0]  # 12 bit resolution
     lines = read_raw(temp_path)
     temp_c = float(lines[0])
     temp_f = temp_c * 9.0 / 5.0 + 32.0
@@ -44,14 +44,14 @@ def read_address(device):
     lines = read_raw(addr_path)
     return lines[0]
 
-
-i=10
+# starting zone index
+zone_index=10
 for device in devices:
     device_address = read_address(device)
     deg_c ,deg_f = read_temp(device)
     print(device_address)
     print(' Deg C: {0} | Deg F {1}'.format("{:3.3f}".format(deg_c),"{:3.3f}".format(deg_f)))
-    fb.append_last_temp_reading(collection = 'systems',system_id = 'MEeFIW6GwQtv1X3Lo7Z2',document = 'zone',zone_index = i, reading_type = 'lineRT',degrees_fahrenheit = deg_f)
-    i = i + 1
+    fb.append_last_temp_reading(collection = 'systems',system_id = 'MEeFIW6GwQtv1X3Lo7Z2',document = 'zone',zone_index = zone_index, reading_type = 'lineRT',degrees_fahrenheit = deg_f)
+    zone_index = zone_index + 1
     time.sleep(2)
 

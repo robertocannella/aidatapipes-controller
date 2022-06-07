@@ -1,0 +1,47 @@
+{
+    "system": {
+        "systemId": null,
+        "systemDetails": {
+            "description": "Gas boiler installed in basement.  Has 3 force hot water zones.  Vented through chimney",
+            "equipmentId": "equipment/FIVUPyNddghNo5JQPEer"
+        },
+        "sensorData": [
+            {
+                "commonName": "First Floor",
+                "sensors": {
+                    "supplySensorAddr": "28.91C0FF030000",
+                    "returnSensorAddr": "28.91C0FF030000",
+                    "roomSensorAddr": "28.91C0FF030000"
+                },
+                "alarms": {
+                    "alarmHigh": 120,
+                    "alarmLow": 20
+                }
+            },
+            {
+                "commonName": "Sunroom",
+                "sensors": {
+                    "supplySensorAddr": "28.91C0FF030000",
+                    "returnSensorAddr": "28.91C0FF030000",
+                    "roomSensorAddr": "28.91C0FF030000"
+                },
+                "alarms": {
+                    "alarmHigh": 120,
+                    "alarmLow": 20
+                }
+            },
+            {
+                "commonName": "Second Floor",
+                "sensors": {
+                    "supplySensorAddr": "28.91C0FF030000",
+                    "returnSensorAddr": "28.91C0FF030000",
+                    "roomSensorAddr": "28.91C0FF030000"
+                },
+                "alarms": {
+                    "alarmHigh": 120,
+                    "alarmLow": 20
+                }
+            }
+        ]
+    }
+}

@@ -69,46 +69,47 @@ SERIESRESISTOR =  9920 # Measured with Ohmmeter
 #     time.sleep(60)
 #     print(THERMISTORPIN.value)
 # take N samples in a row, with a slight delay
-while True:
 
-    res_top.value = True
-    print('res_top: %d'%(res_top.value))
-    samples = []
-    average = 0
 
-    print('taking samples...')
-    for i in range(NUMSAMPLES):
-        samples.append(THERMISTORPIN.value)
-        time.sleep(.2)
+res_top.value = True
+print('res_top: %d'%(res_top.value))
+samples = []
+average = 0
 
-    # average all the samples out
-    for i in range(NUMSAMPLES):
-        average += samples[i]
-        
-    average /= NUMSAMPLES
-    print("Average analog reading %.2f"%(average))
-    # convert the value to resistance
-    average = 65535 / average - 1
-    average = SERIESRESISTOR / average
+print('taking samples...')
+for i in range(NUMSAMPLES):
+    samples.append(THERMISTORPIN.value)
+    time.sleep(.2)
 
-    print("Thermistor resistance %.2f"%(average)); 
+# average all the samples out
+for i in range(NUMSAMPLES):
+    average += samples[i]
+    
+average /= NUMSAMPLES
+print("Average analog reading %.2f"%(average))
+# convert the value to resistance
+average = 65535 / average - 1
+average = SERIESRESISTOR / average
 
-    # calculate temperature using steinhart equation
+print("Thermistor resistance %.2f"%(average)); 
 
-    steinhart = average / THERMISTORNOMINAL;            # (R/Ro)
-    steinhart = math.log(steinhart);                    # ln(R/Ro)
-    steinhart /= BCOEFFICIENT;                          # 1/B * ln(R/Ro)
-    steinhart += 1.0 / (TEMPERATURENOMINAL + 273.15);   # + (1/To)
-    steinhart = 1.0 / steinhart;                        # Invert
-    steinhart -= 273.15;                                # convert absolute temp to C
+# calculate temperature using steinhart equation
 
-    print(celcius_to_fahrenheit(steinhart))
-    res_top.value = False
-    print('res_top: %d'%(res_top.value))
-    # Local Mongo DB
-    db.add_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
+steinhart = average / THERMISTORNOMINAL;            # (R/Ro)
+steinhart = math.log(steinhart);                    # ln(R/Ro)
+steinhart /= BCOEFFICIENT;                          # 1/B * ln(R/Ro)
+steinhart += 1.0 / (TEMPERATURENOMINAL + 273.15);   # + (1/To)
+steinhart = 1.0 / steinhart;                        # Invert
+steinhart -= 273.15;                                # convert absolute temp to C
 
-    # Hosted SSL FireStore DB
-    fb.overwrite_last_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
-    time.sleep(600)
+print(celcius_to_fahrenheit(steinhart))
+res_top.value = False
+print('res_top: %d'%(res_top.value))
+
+
+# Local Mongo DB
+db.add_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
+
+# Hosted SSL FireStore DB
+fb.overwrite_last_temp_reading(SENSOR_ID,celcius_to_fahrenheit(steinhart),'outdoortemps')
 
