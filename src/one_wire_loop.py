@@ -58,6 +58,7 @@ for device in devices:
     print(' Deg C: {0} | Deg F {1}'.format(
         "{:3.3f}".format(deg_c), "{:3.3f}".format(deg_f)))
     # print(datetime.now())
+    
     fb.append_last_temp_reading(collection='systems', system_id='test-id',
                                 document='zone', zone_index=zone_index, reading_type='lineRT', degrees_fahrenheit=deg_f)
     zone_index = zone_index + 1

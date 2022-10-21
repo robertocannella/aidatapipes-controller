@@ -28,6 +28,32 @@ firebase_admin.initialize_app(cred)
 # create db object
 db = firestore.client()
 
+
+################################################################################
+#
+#   Utility Functions
+#
+################################################################################
+
+def get_or_create_document():
+    # creating the date object of today's date
+    todays_date = datetime.today()
+
+    # printing todays date
+    #print("Current date: ", todays_date)
+
+    # fetching the current year, month and day of today
+    current_year = todays_date.year
+    current_month = todays_date.month
+    current_week = int(todays_date.day / 7) + 1
+    # print(todays_date.day/7)
+
+    # print("Current year:", current_year)
+    # print("Current month:", current_month)
+    # print("Current week:", current_week)
+    collection_id = "{0}-{1}-{2}".format(current_year,
+                                         current_month, current_week)
+    return collection_id
 #**************************   CRUD   ***************************************#
 
 
@@ -53,6 +79,7 @@ def overwrite_last_temp_reading(sensor_id, degrees_fahrenheit, type):
         'degreesFahrenheit': degrees_fahrenheit
     })
 
+
 ######################################################################
 #
 # Append temperature reading
@@ -68,8 +95,11 @@ def append_last_temp_reading(system_id, degrees_fahrenheit, collection, document
     appends a reading into an array. 
 
     """
+    # get or create document id
+    collection_id = get_or_create_document()
+
     # generate link to collection
-    doc_ref = db.collection(collection).document(system_id)
+    doc_ref = db.collection(collection).document(collection_id)
 
     # does the collection exist?
     doc = doc_ref.get()
@@ -85,7 +115,8 @@ def append_last_temp_reading(system_id, degrees_fahrenheit, collection, document
         # append temperature
         locator = document + str(zone_index) + '.lineRT'
         doc_ref.update({locator: firestore.ArrayUnion([obj])})
-        print(f'Document data: {doc.to_dict()}')
+        # print the dictionary out
+        #print(f'Document data: {doc.to_dict()}')
     else:
         # create the document
 
@@ -101,5 +132,6 @@ def append_last_temp_reading(system_id, degrees_fahrenheit, collection, document
         locator = document + str(zone_index) + '.lineRT'
         #doc_ref.update({locator: firestore.ArrayUnion([obj])})
         doc_ref.set({locator: firestore.ArrayUnion([obj])})
-        print(f'Document data: {doc.to_dict()}')
-        print(u'Had to generate new document')
+        # print the dictionary out
+        #print(f'Document data: {doc.to_dict()}')
+        #print(u'Had to generate new document')
