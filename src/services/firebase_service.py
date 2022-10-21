@@ -1,10 +1,11 @@
 ################################################################################
 #
 #   GOOGLE FIRESTORE NOSQL DATA BASE SERVICE
-#   
+#
 ################################################################################
 
 #**************************   IMPORTS   ***************************************#
+from pydoc import doc
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
@@ -15,17 +16,17 @@ from datetime import datetime
 ################################################################################
 #
 #   GOOGLE FIRESTORE INSTANCE
-#   
+#
 ################################################################################
 
-# Import credentials from json 
+# Import credentials from json
 cred = credentials.Certificate("fs-aidatapipes-key-04-30-2022.json")
 
 # Initialize app
 firebase_admin.initialize_app(cred)
 
 # create db object
-db = firestore.client() 
+db = firestore.client()
 
 #**************************   CRUD   ***************************************#
 
@@ -35,11 +36,11 @@ db = firestore.client()
 # Replace a temperature reading
 #
 ######################################################################
-def overwrite_last_temp_reading(sensor_id,degrees_fahrenheit,type): 
+def overwrite_last_temp_reading(sensor_id, degrees_fahrenheit, type):
     """
     adds a reading into the database. 
     """
-    # generate link to collection 
+    # generate link to collection
     doc_ref = db.collection(type).document(sensor_id)
 
     # generate timestamp
@@ -51,30 +52,54 @@ def overwrite_last_temp_reading(sensor_id,degrees_fahrenheit,type):
         'sensorId': sensor_id,
         'degreesFahrenheit': degrees_fahrenheit
     })
-   
+
 ######################################################################
 #
 # Append temperature reading
 #
+# This functionality needs to be split up.  Possibly create a function
+# get_or_create_document()
+#
 ######################################################################
 
-def append_last_temp_reading(system_id,degrees_fahrenheit,collection,document,zone_index,reading_type): 
+
+def append_last_temp_reading(system_id, degrees_fahrenheit, collection, document, zone_index, reading_type):
     """
     appends a reading into an array. 
 
     """
-    # generate link to collection 
+    # generate link to collection
     doc_ref = db.collection(collection).document(system_id)
 
-    # generate timestamp
-    javascript_timestamp = datetime.timestamp(datetime.now()) * 1000
+    # does the collection exist?
+    doc = doc_ref.get()
+    if doc.exists:
+        # generate timestamp
+        javascript_timestamp = datetime.timestamp(datetime.now()) * 1000
 
-    # build object
-    obj = {
-        'timeStamp': javascript_timestamp,
-        'degF': degrees_fahrenheit
-    }
-    # append temperature
-    locator = document + str(zone_index) + '.lineRT'
-    doc_ref.update({ locator: firestore.ArrayUnion([obj]) })
- 
+        # build object
+        obj = {
+            'timeStamp': javascript_timestamp,
+            'degF': degrees_fahrenheit
+        }
+        # append temperature
+        locator = document + str(zone_index) + '.lineRT'
+        doc_ref.update({locator: firestore.ArrayUnion([obj])})
+        print(f'Document data: {doc.to_dict()}')
+    else:
+        # create the document
+
+        # generate timestamp
+        javascript_timestamp = datetime.timestamp(datetime.now()) * 1000
+
+        # build object
+        obj = {
+            'timeStamp': javascript_timestamp,
+            'degF': degrees_fahrenheit
+        }
+        # append temperature
+        locator = document + str(zone_index) + '.lineRT'
+        #doc_ref.update({locator: firestore.ArrayUnion([obj])})
+        doc_ref.set({locator: firestore.ArrayUnion([obj])})
+        print(f'Document data: {doc.to_dict()}')
+        print(u'Had to generate new document')
