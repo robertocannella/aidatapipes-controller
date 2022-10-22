@@ -11,6 +11,7 @@
 #  ******************************************************************* #
 
 
+from datetime import date, datetime
 import math
 from services import mongodb_service as db
 from services import firebase_service as fb
@@ -26,12 +27,14 @@ base_dir = '/mnt/1wire/'
 devices = glob.glob(base_dir + '28*')
 system_id = config('FB_SYSTEM_ID')
 
+
 def read_raw(property_path):
-    f = open (property_path,'r')
+    f = open(property_path, 'r')
     lines = f.readlines()
     f.close()
     return lines
-	
+
+
 def read_temp(device):
     temp_path = glob.glob(device + '/temperature12')[0]  # 12 bit resolution
     lines = read_raw(temp_path)
@@ -39,19 +42,24 @@ def read_temp(device):
     temp_f = temp_c * 9.0 / 5.0 + 32.0
     return temp_c, temp_f
 
+
 def read_address(device):
     addr_path = glob.glob(device + '/address')[0]
     lines = read_raw(addr_path)
     return lines[0]
 
+
 # starting zone index
-zone_index=10
+zone_index = 10
 for device in devices:
     device_address = read_address(device)
-    deg_c ,deg_f = read_temp(device)
+    deg_c, deg_f = read_temp(device)
     print(device_address)
-    print(' Deg C: {0} | Deg F {1}'.format("{:3.3f}".format(deg_c),"{:3.3f}".format(deg_f)))
-    fb.append_last_temp_reading(collection = 'systems',system_id = 'MEeFIW6GwQtv1X3Lo7Z2',document = 'zone',zone_index = zone_index, reading_type = 'lineRT',degrees_fahrenheit = deg_f)
+    print(' Deg C: {0} | Deg F {1}'.format(
+        "{:3.3f}".format(deg_c), "{:3.3f}".format(deg_f)))
+    # print(datetime.now())
+    
+    fb.append_last_temp_reading(collection='systems', system_id='test-id',
+                                document='zone', zone_index=zone_index, reading_type='lineRT', degrees_fahrenheit=deg_f)
     zone_index = zone_index + 1
     time.sleep(2)
-
