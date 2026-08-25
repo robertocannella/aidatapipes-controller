@@ -21,14 +21,8 @@ import re
 #####################################################################
 
 # Get environment variables
-DB_HOST = config('DB_HOST')
-DB_PORT = config('DB_PORT')
 DB_NAME = config('DB_NAME')
-DB_USER = config('DB_USER')
-DB_PASS = config('DB_PASS')
-
-# connection string
-DB_URL = f"mongodb://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false"
+DB_URL = config('DB_URL')
 
 # connection
 client = MongoClient(DB_URL)
@@ -131,9 +125,9 @@ def addHydroZoneData(system_id,zone_index,line_type,degF):
 ######################################################################
 
 def authenticate(id):    # authenticate
-    if DB_HOST is None:
+    if DB_URL is None:
         print('User is undefined')
-    print("authenticating user", DB_HOST, id)
+    print("authenticating user", id)
 
 
     
